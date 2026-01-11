@@ -13,7 +13,16 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "eventingestioncontainer//Customer.xlsx"
+					},
+					{
+						"name": "Destination",
+						"value": "sinkingestioncontainer/@{'Customer'}/@{concat('Customer_', \nformatDateTime(utcNow(),'yyyyMMdd'))}"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "ExcelSource",
@@ -211,7 +220,16 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "eventingestioncontainer//Products.csv"
+					},
+					{
+						"name": "Destination",
+						"value": "sinkingestioncontainer/@{'Products'}/@{concat('Products_', \nformatDateTime(utcNow(),'yyyyMMdd'))}"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "DelimitedTextSource",
@@ -366,7 +384,16 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "eventingestioncontainer//@{concat('Orders_',\nformatDateTime(utcNow(),'yyyyMMdd')\n,'.json')}"
+					},
+					{
+						"name": "Destination",
+						"value": "sinkingestioncontainer/@{'Orders'}/@{concat('Orders_',  \nformatDateTime(utcNow(),'yyyyMMdd'))}"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "JsonSource",
