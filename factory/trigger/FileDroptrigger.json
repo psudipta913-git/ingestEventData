@@ -1,0 +1,25 @@
+{
+	"name": "FileDroptrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Source_Copy_As_Parquet",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/eventingestioncontainer/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/f4415399-daf4-4055-910a-9a7f13e637d0/resourceGroups/Ecommerce-RG/providers/Microsoft.Storage/storageAccounts/ecommsourcefilestore",
+			"events": [
+				"Microsoft.Storage.BlobDeleted",
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
