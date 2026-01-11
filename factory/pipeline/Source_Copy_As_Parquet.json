@@ -184,8 +184,304 @@
 						"referenceName": "sink_DS",
 						"type": "DatasetReference",
 						"parameters": {
-							"targetFolder": {
-								"value": "@concat(\n  'Customer_',\n  formatDateTime(utcNow(), 'yyyyMMdd'),\n  '.xlsx'\n)",
+							"targetFolder": "Customer",
+							"targetFile": {
+								"value": "@concat('Customer_', \nformatDateTime(utcNow(),'yyyyMMdd'))",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy_Products_Data",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy_Customers_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Product ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Product_Id",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Category",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Category",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Sub-Category",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Sub_Category",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Product Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Product_name",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "State",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "State",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Price per product",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Price_per_product",
+									"physicalType": "UTF8"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "products_DS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sink_DS",
+						"type": "DatasetReference",
+						"parameters": {
+							"targetFolder": "Products",
+							"targetFile": {
+								"value": "@concat('Products_', \nformatDateTime(utcNow(),'yyyyMMdd'))",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy_Orders_Data",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy_Products_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Row ID']"
+								},
+								"sink": {
+									"name": "Row _ID"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Order ID']"
+								},
+								"sink": {
+									"name": "Order_ID"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Order Date']"
+								},
+								"sink": {
+									"name": "Order_Date"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Ship Date']"
+								},
+								"sink": {
+									"name": "Ship_Date"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Ship Mode']"
+								},
+								"sink": {
+									"name": "Ship_Mode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Customer ID']"
+								},
+								"sink": {
+									"name": "Customer_ID"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Product ID']"
+								},
+								"sink": {
+									"name": "Product_ID"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Quantity']"
+								},
+								"sink": {
+									"name": "Quantity"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Price']"
+								},
+								"sink": {
+									"name": "Price"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Discount']"
+								},
+								"sink": {
+									"name": "Discount"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Profit']"
+								},
+								"sink": {
+									"name": "Profit"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "OrdersJson_DS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sink_DS",
+						"type": "DatasetReference",
+						"parameters": {
+							"targetFolder": "Orders",
+							"targetFile": {
+								"value": "@concat('Orders_',  \nformatDateTime(utcNow(),'yyyyMMdd'))",
 								"type": "Expression"
 							}
 						}
