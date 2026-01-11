@@ -502,6 +502,23 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "CustomerFailure",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "Copy_Customers_Data",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": "Copy Customers Filed",
+					"errorCode": "500"
+				}
 			}
 		],
 		"annotations": []
