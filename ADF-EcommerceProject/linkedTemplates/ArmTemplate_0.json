@@ -18,6 +18,10 @@
 		"sinkADLS_LD_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://ecommigenstionfilestore.dfs.core.windows.net/"
+		},
+		"FileDroptrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/f4415399-daf4-4055-910a-9a7f13e637d0/resourceGroups/Ecommerce-RG/providers/Microsoft.Storage/storageAccounts/ecommsourcefilestore"
 		}
 	},
 	"variables": {
@@ -139,7 +143,10 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "*.json",
+						"fileName": {
+							"value": "@concat('Orders_',\nformatDateTime(utcNow(),'yyyyMMdd')\n,'.json')",
+							"type": "Expression"
+						},
 						"container": "eventingestioncontainer"
 					}
 				},
@@ -200,7 +207,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "*.csv",
+						"fileName": "Products.csv",
 						"container": "eventingestioncontainer"
 					},
 					"columnDelimiter": ",",
@@ -208,32 +215,7 @@
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
-				"schema": [
-					{
-						"name": "Product ID",
-						"type": "String"
-					},
-					{
-						"name": "Category",
-						"type": "String"
-					},
-					{
-						"name": "Sub-Category",
-						"type": "String"
-					},
-					{
-						"name": "Product Name",
-						"type": "String"
-					},
-					{
-						"name": "State",
-						"type": "String"
-					},
-					{
-						"name": "Price per product",
-						"type": "String"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/sourceblob_LD')]"
@@ -251,6 +233,9 @@
 				"parameters": {
 					"targetFolder": {
 						"type": "string"
+					},
+					"targetFile": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -258,6 +243,10 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().targetFile",
+							"type": "Expression"
+						},
 						"folderPath": {
 							"value": "@dataset().targetFolder",
 							"type": "Expression"
@@ -319,8 +308,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Customer ID",
-											"type": "String",
+											"name": "Customer_id",
 											"physicalType": "UTF8"
 										}
 									},
@@ -331,8 +319,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Customer Name",
-											"type": "String",
+											"name": "Customer_name",
 											"physicalType": "UTF8"
 										}
 									},
@@ -427,8 +414,7 @@
 											"physicalType": "String"
 										},
 										"sink": {
-											"name": "Postal Code",
-											"type": "String",
+											"name": "Postal_code",
 											"physicalType": "UTF8"
 										}
 									},
@@ -464,13 +450,343 @@
 								"referenceName": "sink_DS",
 								"type": "DatasetReference",
 								"parameters": {
-									"targetFolder": {
-										"value": "@concat(\n  'Customer_',\n  formatDateTime(utcNow(), 'yyyyMMdd'),\n  '.xlsx'\n)",
+									"targetFolder": "Customer",
+									"targetFile": {
+										"value": "@concat('Customer_', \nformatDateTime(utcNow(),'yyyyMMdd'))",
 										"type": "Expression"
 									}
 								}
 							}
 						]
+					},
+					{
+						"name": "Copy_Products_Data",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Copy_Customers_Data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "sourceblob_LD",
+										"type": "LinkedServiceReference"
+									},
+									"path": "eventingestioncontainer"
+								}
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Product ID",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Product_ID",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Category",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Category",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Sub-Category",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Sub_Category",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Product Name",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Product_Name",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "State",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "State",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "Price per product",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Price_per_product",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "products_DS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sink_DS",
+								"type": "DatasetReference",
+								"parameters": {
+									"targetFolder": "Products",
+									"targetFile": {
+										"value": "@concat('Products_', \nformatDateTime(utcNow(),'yyyyMMdd'))",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Copy_Orders_Data",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Copy_Products_Data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['Row ID']"
+										},
+										"sink": {
+											"name": "Row_ID"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Order ID']"
+										},
+										"sink": {
+											"name": "Order_ID"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Order Date']"
+										},
+										"sink": {
+											"name": "Order_Date"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Ship Date']"
+										},
+										"sink": {
+											"name": "Ship_Date"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Ship Mode']"
+										},
+										"sink": {
+											"name": "Ship_Mode"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Customer ID']"
+										},
+										"sink": {
+											"name": "Customer_ID"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Product ID']"
+										},
+										"sink": {
+											"name": "Product_ID"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Quantity']"
+										},
+										"sink": {
+											"name": "Quantity"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Price']"
+										},
+										"sink": {
+											"name": "Price"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Discount']"
+										},
+										"sink": {
+											"name": "Discount"
+										}
+									},
+									{
+										"source": {
+											"path": "$['Profit']"
+										},
+										"sink": {
+											"name": "Profit"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OrdersJson_DS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sink_DS",
+								"type": "DatasetReference",
+								"parameters": {
+									"targetFolder": "Orders",
+									"targetFile": {
+										"value": "@concat('Orders_',  \nformatDateTime(utcNow(),'yyyyMMdd'))",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "CustomerFailure",
+						"type": "Fail",
+						"dependsOn": [
+							{
+								"activity": "Copy_Customers_Data",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"message": "Copy Customers Filed",
+							"errorCode": "500"
+						}
 					}
 				],
 				"policy": {
@@ -480,7 +796,41 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Customers_DS')]",
-				"[concat(variables('factoryId'), '/datasets/sink_DS')]"
+				"[concat(variables('factoryId'), '/datasets/sink_DS')]",
+				"[concat(variables('factoryId'), '/datasets/products_DS')]",
+				"[concat(variables('factoryId'), '/datasets/OrdersJson_DS')]",
+				"[concat(variables('factoryId'), '/linkedServices/sourceblob_LD')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FileDroptrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Source_Copy_As_Parquet",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/eventingestioncontainer/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('FileDroptrigger_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobDeleted",
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Source_Copy_As_Parquet')]"
 			]
 		}
 	]

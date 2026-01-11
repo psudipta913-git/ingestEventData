@@ -14,6 +14,9 @@
 		"sinkADLS_LD_properties_typeProperties_url": {
 			"value": "https://ecommigenstionfilestore.dfs.core.windows.net/"
 		},
+		"FileDroptrigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/f4415399-daf4-4055-910a-9a7f13e637d0/resourceGroups/Ecommerce-RG/providers/Microsoft.Storage/storageAccounts/ecommsourcefilestore"
+		},
 		"containerUri": {
 			"value": ""
 		},
