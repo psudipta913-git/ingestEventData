@@ -1,0 +1,56 @@
+{
+	"name": "OrdersJson_DS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sourceblob_LD",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "*.json",
+				"container": "eventingestioncontainer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"Row ID": {
+					"type": "integer"
+				},
+				"Order ID": {
+					"type": "string"
+				},
+				"Order Date": {
+					"type": "string"
+				},
+				"Ship Date": {
+					"type": "string"
+				},
+				"Ship Mode": {
+					"type": "string"
+				},
+				"Customer ID": {
+					"type": "string"
+				},
+				"Product ID": {
+					"type": "string"
+				},
+				"Quantity": {
+					"type": "integer"
+				},
+				"Price": {
+					"type": "number"
+				},
+				"Discount": {
+					"type": "number"
+				},
+				"Profit": {
+					"type": "number"
+				}
+			}
+		}
+	}
+}
