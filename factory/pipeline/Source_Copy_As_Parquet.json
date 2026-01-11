@@ -3,12 +3,12 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy_Customers_Data",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
-					"retry": 0,
+					"retry": 1,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
@@ -187,7 +187,10 @@
 						"referenceName": "sink_DS",
 						"type": "DatasetReference",
 						"parameters": {
-							"targetFolder": "Customer.xlsx"
+							"targetFolder": {
+								"value": "@concat(\n  'Customer_',\n  formatDateTime(utcNow(), 'yyyyMMdd'),\n  '.xlsx'\n)",
+								"type": "Expression"
+							}
 						}
 					}
 				]
