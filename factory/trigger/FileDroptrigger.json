@@ -14,7 +14,7 @@
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
 			"blobPathBeginsWith": "/eventingestioncontainer/blobs/",
-			"ignoreEmptyBlobs": false,
+			"ignoreEmptyBlobs": true,
 			"scope": "/subscriptions/f4415399-daf4-4055-910a-9a7f13e637d0/resourceGroups/Ecommerce-RG/providers/Microsoft.Storage/storageAccounts/ecommsourcefilestore",
 			"events": [
 				"Microsoft.Storage.BlobDeleted",
