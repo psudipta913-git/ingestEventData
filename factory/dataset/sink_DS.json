@@ -5,11 +5,20 @@
 			"referenceName": "sinkADLS_LD",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"targetFolder": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "Parquet",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().targetFolder",
+					"type": "Expression"
+				},
 				"fileSystem": "sinkingestioncontainer"
 			},
 			"compressionCodec": "snappy"
