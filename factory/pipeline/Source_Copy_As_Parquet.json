@@ -234,6 +234,21 @@
 						}
 					},
 					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"logSettings": {
+						"enableCopyActivityLog": true,
+						"copyActivityLogSettings": {
+							"logLevel": "Warning",
+							"enableReliableLogging": false
+						},
+						"logLocationSettings": {
+							"linkedServiceName": {
+								"referenceName": "sourceblob_LD",
+								"type": "LinkedServiceReference"
+							},
+							"path": "eventingestioncontainer"
+						}
+					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
