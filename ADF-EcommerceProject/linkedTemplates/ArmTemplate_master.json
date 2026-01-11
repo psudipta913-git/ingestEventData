@@ -7,13 +7,13 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "ADF-EcommerceProject"
 		},
-		"sourceblob_LD_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'sourceblob_LD'"
-		},
 		"sinkADLS_LD_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'sinkADLS_LD'"
+		},
+		"sourceblob_LD_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'sourceblob_LD'"
 		},
 		"sinkADLS_LD_properties_typeProperties_url": {
 			"type": "string",
@@ -46,11 +46,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"sourceblob_LD_connectionString": {
-						"value": "[parameters('sourceblob_LD_connectionString')]"
-					},
 					"sinkADLS_LD_accountKey": {
 						"value": "[parameters('sinkADLS_LD_accountKey')]"
+					},
+					"sourceblob_LD_connectionString": {
+						"value": "[parameters('sourceblob_LD_connectionString')]"
 					},
 					"sinkADLS_LD_properties_typeProperties_url": {
 						"value": "[parameters('sinkADLS_LD_properties_typeProperties_url')]"
