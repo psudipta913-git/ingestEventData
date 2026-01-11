@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ADF-EcommerceProject"
+		},
+		"sourceblob_LD_connectionString": {
+			"value": ""
+		},
+		"sinkADLS_LD_accountKey": {
+			"value": ""
+		},
+		"sinkADLS_LD_properties_typeProperties_url": {
+			"value": "https://ecommigenstionfilestore.dfs.core.windows.net/"
+		}
+	}
+}
