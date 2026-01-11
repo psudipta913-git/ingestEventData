@@ -11,7 +11,7 @@
 			"sheetName": "Worksheet",
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "@dataset().fileName",
+				"fileName": "Customer.xlsx",
 				"container": "eventingestioncontainer"
 			},
 			"firstRowAsHeader": true
