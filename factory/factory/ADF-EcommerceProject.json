@@ -1,0 +1,9 @@
+{
+	"name": "ADF-EcommerceProject",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1ab060cc-6254-4243-9d21-9e5422245454",
+		"tenantId": "911e811b-6b53-4b91-8b16-7f9bd4a8e06a"
+	}
+}
