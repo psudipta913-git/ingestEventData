@@ -43,8 +43,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Customer ID",
-									"type": "String",
+									"name": "Customer_id",
 									"physicalType": "UTF8"
 								}
 							},
@@ -55,8 +54,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Customer Name",
-									"type": "String",
+									"name": "Customer_name",
 									"physicalType": "UTF8"
 								}
 							},
@@ -151,8 +149,7 @@
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "Postal Code",
-									"type": "String",
+									"name": "Postal_code",
 									"physicalType": "UTF8"
 								}
 							},
