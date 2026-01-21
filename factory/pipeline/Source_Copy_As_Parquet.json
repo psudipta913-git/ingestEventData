@@ -15,12 +15,8 @@
 				},
 				"userProperties": [
 					{
-						"name": "Source",
-						"value": "eventingestioncontainer//Customer.xlsx"
-					},
-					{
-						"name": "Destination",
-						"value": "sinkingestioncontainer/@{'Customer'}/@{concat('Customer_', \nformatDateTime(utcNow(),'yyyyMMdd'))}"
+						"name": "SourceSystem",
+						"value": "CSV Data"
 					}
 				],
 				"typeProperties": {
@@ -252,6 +248,7 @@
 						}
 					},
 					"enableStaging": false,
+					"parallelCopies": 32,
 					"enableSkipIncompatibleRow": true,
 					"logSettings": {
 						"enableCopyActivityLog": true,
@@ -545,6 +542,36 @@
 				"typeProperties": {
 					"message": "Copy Customers Filed",
 					"errorCode": "500"
+				}
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "OrdersJson_DS",
+						"type": "DatasetReference"
+					}
 				}
 			}
 		],
